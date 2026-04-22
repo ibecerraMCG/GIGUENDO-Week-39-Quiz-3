@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 39 Practice Quiz 3</title>
+
+    <style>
+        /* --- CSS Variables & Themes --- */
+        :root {
+            --transition-speed: 0.3s;
+            --font-main: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            
+            /* Default Feedback Colors (Fallback for custom themes) */
+            --feedback-success-bg: #064e3b;
+            --feedback-success-border: #059669;
+            --feedback-success-text: #a7f3d0;
+            --feedback-error-bg: #7f1d1d;
+            --feedback-error-border: #dc2626;
+            --feedback-error-text: #fecaca;
+        }[data-theme="dark"] {
+            --bg-body: #1e293b; --bg-card: #334155; --bg-header: #0f172a;
+            --text-main: #f1f5f9; --text-muted: #94a3b8; --text-accent: #38bdf8;
+            --border-color: #475569; --highlight-bg: #475569;
+            --button-bg: #38bdf8; --button-text: #0f172a; --button-hover: #0ea5e9;
+        }[data-theme="light"] {
+            --bg-body: #f3f4f6; --bg-card: #ffffff; --bg-header: #ffffff;
+            --text-main: #1f2937; --text-muted: #6b7280; --text-accent: #2563eb;
+            --border-color: #e5e7eb; --highlight-bg: #f3f4f6;
+            --button-bg: #2563eb; --button-text: #ffffff; --button-hover: #1d4ed8;
+            --feedback-success-bg: #ecfdf5; --feedback-success-border: #34d399; --feedback-success-text: #065f46;
+            --feedback-error-bg: #fef2f2; --feedback-error-border: #f87171; --feedback-error-text: #991b1b;
+        }[data-theme="midnight"] {
+            --bg-body: #000000; --bg-card: #000000; --bg-header: #000000;
+            --text-main: #e0e0e0; --text-muted: #888888; --text-accent: #90caf9;
+            --border-color: #333333; --highlight-bg: #1a1a1a;
+            --button-bg: #90caf9; --button-text: #000000; --button-hover: #42a5f5;
+            --feedback-success-bg: #051b11; --feedback-success-border: #0f5132; --feedback-success-text: #75b798;
+            --feedback-error-bg: #2c0b0e; --feedback-error-border: #842029; --feedback-error-text: #ea868f;
+        }[data-theme="legacy-dark"] {
+            --bg-body: #2d343e; --bg-card: #3c424f; --bg-header: #3c424f;
+            --text-main: #e8e6e3; --text-muted: #b0c4de; --text-accent: #8ab4f8;
+            --border-color: #555; --highlight-bg: #454c5a;
+            --button-bg: #8ab4f8; --button-text: #202124; --button-hover: #a3c5f9;
+            --feedback-success-bg: #344e41; --feedback-success-border: #52b788; --feedback-success-text: #c7f9cc;
+            --feedback-error-bg: #5e2129; --feedback-error-border: #a4133c; --feedback-error-text: #f8d7da;
+        }[data-theme="sepia"] {
+            --bg-body: #f4ecd8; --bg-card: #fdf6e3; --bg-header: #e4d5b7;
+            --text-main: #433422; --text-muted: #7c6f5a; --text-accent: #a05a2c;
+            --border-color: #d3c4a5; --highlight-bg: #ebe1c9;
+            --button-bg: #a05a2c; --button-text: #fdf6e3; --button-hover: #864822;
+            --feedback-success-bg: #e6f4ea; --feedback-success-border: #8ab893; --feedback-success-text: #2e4c35;
+            --feedback-error-bg: #f9e3e3; --feedback-error-border: #d48f8f; --feedback-error-text: #5c2b2b;
+        }
+
+        [data-theme="contrast"] {
+            --bg-body: #000000; --bg-card: #000000; --bg-header: #000000;
+            --text-main: #ffffff; --text-muted: #dddddd; --text-accent: #ffff00;
+            --border-color: #ffffff; --highlight-bg: #333333;
+            --button-bg: #ffff00; --button-text: #000000; --button-hover: #e6e600;
+            --feedback-success-bg: #000000; --feedback-success-border: #00ff00; --feedback-success-text: #00ff00;
+            --feedback-error-bg: #000000; --feedback-error-border: #ff0000; --feedback-error-text: #ff0000;
+        }
+
+        /* --- Global Reset & Layout --- */
+        * { box-sizing: border-box; }
+        
+        body {
+            font-family: var(--font-main);
+            margin: 0;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+            line-height: 1.6;
+        }
+
+        /* --- Header --- */
+        header {
+            background-color: var(--bg-header);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        header.unpinned { position: relative; box-shadow: none; }
+
+        .header-top {
+            display: flex; justify-content: space-between; align-items: center;
+            width: 100%; flex-wrap: wrap; gap: 15px;
+        }
+
+        header h1 { font-size: 1.5rem; margin: 0; color: var(--text-accent); font-weight: 700; }
+
+        .controls-wrapper { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+        /* --- Custom Theme Builder --- */
+        .custom-builder {
+            display: none; flex-wrap: wrap; gap: 15px;
+            background-color: var(--bg-card); padding: 10px 15px;
+            border-radius: 8px; border: 1px solid var(--border-color);
+            margin-top: 5px; font-size: 0.85rem; animation: fadeIn 0.3s;
+            width: 100%; justify-content: flex-end;
+        }
+        .custom-builder.active { display: flex; }
+        .color-picker-group { display: flex; align-items: center; gap: 8px; }
+        .color-picker-group input[type="color"] {
+            border: none; width: 25px; height: 25px; border-radius: 4px;
+            cursor: pointer; padding: 0; background: none;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- Controls --- */
+        .header-btn {
+            background-color: var(--highlight-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .header-btn:hover {
+            border-color: var(--text-accent);
+            color: var(--text-accent);
+        }
+
+        .pin-btn {
+            background: none; border: 1px solid var(--border-color); color: var(--text-main);
+            cursor: pointer; padding: 0 10px; border-radius: 6px; font-size: 1rem;
+            transition: background-color 0.2s; height: 34px; display: flex;
+            align-items: center; justify-content: center;
+        }
+        .pin-btn:hover { background-color: var(--highlight-bg); }
+        .pin-btn.pin-active { background-color: rgba(0, 0, 0, 0.1); }
+
+        select#theme-select {
+            padding: 0 12px; border-radius: 6px; border: 1px solid var(--border-color);
+            background-color: var(--bg-card); color: var(--text-main);
+            cursor: pointer; font-family: inherit; height: 34px;
+        }
+
+        /* --- Section Navigation --- */
+        .section-nav { display: flex; gap: 10px; flex-wrap: wrap; }
+        .section-nav button {
+            background-color: var(--highlight-bg); color: var(--text-main);
+            border: 1px solid var(--border-color); padding: 6px 12px;
+            border-radius: 6px; cursor: pointer; font-size: 0.85rem;
+            font-weight: 500; transition: all 0.2s;
+        }
+        .section-nav button:hover { border-color: var(--text-accent); color: var(--text-accent); }
+
+        /* --- Main Content --- */
+        .container {
+            max-width: 850px;
+            margin: 2rem auto;
+            padding: 0 1rem 4rem 1rem;
+        }
+
+        .section-header {
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--text-accent);
+            color: var(--text-accent);
+            font-size: 1.5rem;
+            font-weight: 700;
+            scroll-margin-top: 150px; /* Offset for sticky header */
+        }
+
+        /* --- Question Card --- */
+        .question-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .lo-box {
+            background-color: var(--highlight-bg);
+            border-left: 4px solid var(--text-accent);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-style: italic;
+            display: none; /* Hidden by default */
+        }
+
+        .question-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        /* --- Options --- */
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-label:hover {
+            background-color: var(--highlight-bg);
+            border-color: var(--text-muted);
+        }
+
+        .option-label input {
+            margin-top: 0.3rem;
+            margin-right: 1rem;
+            accent-color: var(--text-accent);
+            transform: scale(1.2);
+        }
+
+        /* --- Buttons --- */
+        .btn-check {
+            margin-top: 1.5rem;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            font-size: 1rem;
+        }
+
+        .btn-check:hover {
+            opacity: 0.9;
+        }
+
+        .btn-link {
+            display: inline-block;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: opacity 0.2s;
+            font-size: 1rem;
+        }
+
+        .btn-link:hover {
+            opacity: 0.9;
+        }
+
+        /* --- Feedback Area --- */
+        .feedback {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            border-radius: 8px;
+            display: none; /* Hidden by default */
+            border: 1px solid transparent;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feedback.correct {
+            background-color: var(--feedback-success-bg);
+            border-color: var(--feedback-success-border);
+            color: var(--feedback-success-text);
+        }
+
+        .feedback.incorrect {
+            background-color: var(--feedback-error-bg);
+            border-color: var(--feedback-error-border);
+            color: var(--feedback-error-text);
+        }
+
+        .feedback-header {
+            font-weight: 800;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .rationale {
+            margin-top: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .source {
+            display: block;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            opacity: 0.8;
+            font-style: italic;
+            border-top: 1px dashed currentColor;
+            padding-top: 0.5rem;
+        }
+
+        /* --- Mobile Tweaks --- */
+        @media (max-width: 768px) {
+            .header-top { flex-direction: column; align-items: flex-start; }
+            .controls-wrapper { width: 100%; justify-content: flex-start; }
+            .section-nav { justify-content: flex-start; }
+            .custom-builder { justify-content: flex-start; }
+            header h1 { font-size: 1.25rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header id="main-header">
+        <div class="header-top">
+            <h1>Week 39 Practice Quiz 3</h1>
+            <div class="controls-wrapper">
+                
+                <!-- Reveal LOs Button -->
+                <button id="reveal-all-btn" class="header-btn" onclick="toggleAllLOs()">Show Learning Objectives</button>
+                
+                <!-- Pin Button -->
+                <button class="pin-btn pin-active" id="pin-btn" onclick="toggleHeader()" title="Pin/Unpin Header">📌</button>
+                
+                <!-- Theme Selector -->
+                <div class="theme-control">
+                    <select id="theme-select" onchange="changeTheme(this.value)">
+                        <option value="dark">Modern Dark</option>
+                        <option value="midnight">Midnight</option>
+                        <option value="light">Modern Light</option>
+                        <option value="legacy-dark">Legacy Dark</option>
+                        <option value="sepia">Sepia</option>
+                        <option value="contrast">High Contrast</option>
+                        <option value="custom">⚙️ Custom...</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Custom Theme Color Pickers -->
+            <div class="custom-builder" id="custom-builder">
+                <div class="color-picker-group">
+                    <label>Background:</label>
+                    <input type="color" id="color-bg" value="#1a1a2e" oninput="updateCustomTheme()">
+                </div>
+                <div class="color-picker-group">
+                    <label>Cards:</label>
+                    <input type="color" id="color-card" value="#16213e" oninput="updateCustomTheme()">
+                </div>
+                <div class="color-picker-group">
+                    <label>Text:</label>
+                    <input type="color" id="color-text" value="#e94560" oninput="updateCustomTheme()">
+                </div>
+                <div class="color-picker-group">
+                    <label>Accent:</label>
+                    <input type="color" id="color-accent" value="#0f3460" oninput="updateCustomTheme()">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Dynamic Navigation Bar -->
+        <div class="section-nav" id="section-nav"></div>
+    </header>
+
+    <div class="container">
+        <div id="quiz-root">
+            <!-- Content injected via JS -->
+        </div>
+    </div>
+
+    <script>
+        // --- Data ---
+        const quizData =[
+            // --- Section 1: Cytochrome P450 Liver Metabolism ---
+            {
+                section: "Cytochrome P450 Liver Metabolism",
+                fullLO: "LO1: Describe drug (xenobiotic) metabolism (biotransformation)",
+                question: "A 45-year-old man receives a highly lipid-soluble medication for a systemic infection. In order for this drug to be readily excreted by the renal system in his urine, it must first undergo biotransformation to become water-soluble. This critical process of drug metabolism primarily takes place in which of the following organs?",
+                options: {
+                    A: "Brain",
+                    B: "Heart",
+                    C: "Kidney",
+                    D: "Liver",
+                    E: "Lungs"
+                },
+                correctAnswer: "D",
+                rationale: "The liver is the primary site of drug metabolism (biotransformation), where lipid or fat-soluble xenobiotics are converted into water-soluble derivatives so they can be readily excreted by the renal system.",
+                source: "Cytochrome P450 & Drug Metabolism.pdf, Slide 5: 'Biotransformation: In many tissues... Liver is the major organ for drug metabolism'"
+            },
+            {
+                section: "Cytochrome P450 Liver Metabolism",
+                fullLO: "LO1: Describe drug (xenobiotic) metabolism (biotransformation)",
+                question: "A physician prescribes a new medication to a patient and is evaluating how the drug is absorbed, distributed, metabolized, and excreted by the patient's body. These four processes will ultimately determine the active availability of the drug and the appropriate dosage. Which of the following terms best describes this overarching concept?",
+                options: {
+                    A: "Bioavailability",
+                    B: "Glucuronidation",
+                    C: "Pharmacodynamics",
+                    D: "Pharmacokinetics",
+                    E: "Therapeutic window"
+                },
+                correctAnswer: "D",
+                rationale: "Pharmacokinetics (PK) describes what our body does to a drug, encompassing the four processes of Absorption, Distribution, Metabolism, and Excretion (ADME). This determines the dose, duration, and conversion of prodrugs.",
+                source: "Cytochrome P450 & Drug Metabolism.pdf, Slide 6: 'Pharmacokinetics (PK): What our body does to a drug (ADME)... Determines Dose & Duration (How often & how much)'"
+            },
+            {
+                section: "Cytochrome P450 Liver Metabolism",
+                fullLO: "LO2: Describe the differences between Phase I and Phase II drug and xenobiotic metabolism.",
+                question: "A 55-year-old woman is taking a medication that undergoes two distinct phases of hepatic metabolism. During the first step, a cytochrome P450 enzyme adds a hydroxyl group to the drug molecule. What is the most likely result of this specific Phase I reaction?",
+                options: {
+                    A: "Attachment of a glucuronic acid residue",
+                    B: "Conversion of a fat-soluble drug into a polar metabolite",
+                    C: "Immediate excretion of the intact drug into the feces",
+                    D: "Terminal inactivation of the drug for renal clearance",
+                    E: "Transport of the drug into chylomicrons"
+                },
+                correctAnswer: "B",
+                rationale: "Phase I drug metabolism is mediated by CYP450 enzymes, which convert fat-soluble drugs into polar (water-soluble) metabolites, typically by adding a hydroxyl group. Phase II is the terminal transformation.",
+                source: "Cytochrome P450 & Drug Metabolism.pdf, Slide 11: 'Phase I: CYP450 enzyme mediated... Converts fat soluble drugs into polar metabolites'"
+            },
+            {
+                section: "Cytochrome P450 Liver Metabolism",
+                fullLO: "LO2: Describe the differences between Phase I and Phase II drug and xenobiotic metabolism.",
+                question: "A patient receives an active drug that is subsequently inactivated and prepared for renal excretion. This terminal biotransformation step (Phase II) involves the addition of a sugar molecule to a hydroxyl group on the drug to make it highly water-soluble. Which of the following reactions best describes this process?",
+                options: {
+                    A: "Acetylation",
+                    B: "Deamination",
+                    C: "Glucuronidation",
+                    D: "Hydroxylation",
+                    E: "Sulfation"
+                },
+                correctAnswer: "C",
+                rationale: "Glucuronidation is a typical Phase II terminal biotransformation that involves the addition of glucuronic acid (a sugar molecule) to the –OH group of the drug, rendering it non-toxic and ready for excretion in the urine.",
+                source: "Cytochrome P450 & Drug Metabolism.pdf, Slide 19: 'Glucuronidation: Addition of glucuronic acid (a sugar molecule) to the –OH group.'"
+            },
+            {
+                section: "Cytochrome P450 Liver Metabolism",
+                fullLO: "LO3: Define CYP450 enzymes and describe the nomenclature system used to classify them.",
+                question: "A pharmacology student is reviewing the properties of the enzyme superfamily responsible for the majority of Phase I drug metabolism. These enzymes are named for a specific characteristic observed when carbon monoxide binds to the ferrous group in their essential co-factor. Which of the following is this essential co-factor?",
+                options: {
+                    A: "Copper",
+                    B: "Flavin adenine dinucleotide",
+                    C: "Heme",
+                    D: "Pyridoxal phosphate",
+                    E: "Zinc"
+                },
+                correctAnswer: "C",
+                rationale: "CYP450 enzymes require a heme co-factor. The name \"CYP450\" is derived from the fact that when carbon monoxide binds to the Fe2+ in the heme group, these enzymes show an absorption maximum peak at 450 nm.",
+                source: "Cytochrome P450 & Drug Metabolism.pdf, Slide 12: 'Why the name? CYP450... Have heme co-factor: Similarity to other CYtochromes... When carbon monoxide binds Fe2+ in the heme group, CYPs show absorption maximum “Peak at 450 nm”'"
+            },
+            {
+                section: "Cytochrome P450 Liver Metabolism",
+                fullLO: "LO3: Define CYP450 enzymes and describe the nomenclature system used to classify them.",
+                question: "A researcher is studying the hepatic metabolism of a novel drug by the cytochrome P450 enzyme designated as CYP3A4. Based on the standardized nomenclature system for this superfamily, the letter \"A\" indicates that this enzyme belongs to a specific group that shares what percentage of amino acid homology?",
+                options: {
+                    A: "< 10%",
+                    B: "10% - 20%",
+                    C: "20% - 30%",
+                    D: "40% - 55%",
+                    E: "> 90%"
+                },
+                correctAnswer: "D",
+                rationale: "In the nomenclature of CYP450 enzymes (e.g., CYP3A4), the letter (A) denotes the subfamily. Each member within a subfamily shares 40-55% amino acid homology. The first number (3) denotes the family (at least 40% homology).",
+                source: "Cytochrome P450 & Drug Metabolism.pdf, Slide 15: 'The letter (A in the illustration) denotes the subfamily. Each subfamily member has 40-55% amino acid homology'"
+            },
+            {
+                section: "Cytochrome P450 Liver Metabolism",
+                fullLO: "LO4: Identify the tissue and subcellular distribution of CYP450 enzymes and discuss the enzyme reaction mediated by them.",
+                question: "A cell biologist isolates hepatocytes to study the biotransformation of a new xenobiotic. She determines that the primary enzyme responsible is a transmembrane protein located in the smooth endoplasmic reticulum (SER). For this CYP450 enzyme to function properly in the SER, it requires an electron provider partner. Which of the following is the correct partner?",
+                options: {
+                    A: "Cytochrome c oxidase",
+                    B: "Glutathione-S-transferase",
+                    C: "NADH dehydrogenase",
+                    D: "NADPH-adrenodoxin reductase",
+                    E: "NADPH-CYP450 reductase"
+                },
+                correctAnswer: "E",
+                rationale: "In the smooth endoplasmic reticulum, CYP450 enzymes partner with NADPH-CYP450 reductase, which provides the necessary electrons for the metabolic reaction. (In the mitochondria, the partner is NADPH-adrenodoxin reductase).",
+                source: "Cytochrome P450 & Drug Metabolism.pdf, Slide 13: 'Partner: Electron provider... In SER: NADPH-CYP450 reductase... In mitochondria: NADPH-adrenodoxin reductase'"
+            },
+            {
+                section: "Cytochrome P450 Liver Metabolism",
+                fullLO: "LO4: Identify the tissue and subcellular distribution of CYP450 enzymes and discuss the enzyme reaction mediated by them.",
+                question: "A newly developed lipid-soluble drug is metabolized by a CYP450 enzyme in the liver. During the basic reaction, the enzyme utilizes NADPH, H+, and molecular oxygen (O2) to create a water-soluble product (Drug-OH). Because these enzymes add exactly one oxygen atom into the drug substrate, they are formally classified as:",
+                options: {
+                    A: "Dehydrogenases",
+                    B: "Hydrolases",
+                    C: "Monooxygenases",
+                    D: "Oxidoreductases",
+                    E: "Transferases"
+                },
+                correctAnswer: "C",
+                rationale: "CYP450 enzymes add a single hydroxyl group (-OH) to xenobiotics/drugs. Because they add one oxygen molecule to the substrate, they are classified as monooxygenases.",
+                source: "Cytochrome P450 & Drug Metabolism.pdf, Slide 14: 'Since CYPs add one oxygen molecule they are monooxygenases'"
+            },
+            {
+                section: "Cytochrome P450 Liver Metabolism",
+                fullLO: "LO5: Discuss the clinical relevance of the drug metabolism function of the CYP450 enzymes.",
+                question: "A 40-year-old man is prescribed codeine for a severe cough. Codeine is an inactive prodrug that must be converted by the CYP2D6 enzyme into its active form, morphine, to exert its therapeutic effect. If this patient has advanced alcoholic liver disease that severely impairs his hepatic CYP450 function, which of the following is the most likely outcome of administering a standard dose of codeine?",
+                options: {
+                    A: "Dangerously high plasma levels of active morphine",
+                    B: "Decreased prodrug conversion and therapy failure",
+                    C: "Rapid clearance of the drug by the kidneys",
+                    D: "Severe hepatotoxicity leading to acute liver failure",
+                    E: "Sudden respiratory depression and coma"
+                },
+                correctAnswer: "B",
+                rationale: "Codeine is a prodrug. Liver disease decreases drug metabolism. Therefore, the conversion of the prodrug (codeine) to the active drug (morphine) decreases, leading to therapy failure.",
+                source: "Cytochrome P450 & Drug Metabolism.pdf, Slide 8: 'Liver disease (alcoholic, non-alcoholic): prodrug -> drug ;  drug metabolism'"
+            },
+            {
+                section: "Cytochrome P450 Liver Metabolism",
+                fullLO: "LO5: Discuss the clinical relevance of the drug metabolism function of the CYP450 enzymes.",
+                question: "A 65-year-old woman with chronic kidney disease (CKD) is prescribed a standard dose of an active medication that is known to be metabolized and excreted by the renal system. Due to her impaired renal function, the excretion of the drug and its metabolites is significantly reduced. Which of the following is the most likely consequence of administering this active drug?",
+                options: {
+                    A: "Decreased drug absorption",
+                    B: "Decreased drug half-life",
+                    C: "Increased conversion to a prodrug",
+                    D: "Increased drug toxicity",
+                    E: "Increased Phase I metabolism"
+                },
+                correctAnswer: "D",
+                rationale: "In a patient with kidney disease (CKD), excretion and drug metabolism in the kidney are decreased. For an active drug, this leads to an accumulation of the drug in the body, resulting in increased toxicity.",
+                source: "Cytochrome P450 & Drug Metabolism.pdf, Slide 8: 'Kidney disease (CKD):  Excretion & drug metabolism   toxicity'"
+            },
+            {
+                section: "Cytochrome P450 Liver Metabolism",
+                fullLO: "LO6: Discuss the role of CYP450 enzymes in the generation of carcinogens, activation of therapeutic drugs: Tylenol‐induced liver toxicity and drug‐drug interactions.",
+                question: "A 50-year-old man consumes a diet high in charred, well-done steak. The polycyclic aromatic hydrocarbons (PAH) in the meat are converted by CYP1A1 into epoxides, which can intercalate into DNA and cause mutations leading to cancer. Fortunately, his body can detoxify these epoxides through a conjugation reaction mediated by which of the following Phase II enzymes?",
+                options: {
+                    A: "Acetaldehyde dehydrogenase",
+                    B: "Epoxide hydrolase",
+                    C: "Glucokinase",
+                    D: "Glutathione-S-transferase (GST)",
+                    E: "NADPH-CYP450 reductase"
+                },
+                correctAnswer: "D",
+                rationale: "Carcinogens like PAH are converted into epoxides by CYP1A1/CYP1B1. The body protects itself from these DNA-damaging epoxides through two main pathways: hydrolysis by Epoxide Hydrolase, or conjugation to glutathione by Glutathione-S-Transferase (GST).",
+                source: "Cytochrome P450 & Drug Metabolism.pdf, Slide 17: 'Conjugation of epoxide to Glutathione by Glutathione-S-transferase (GST).'"
+            },
+            {
+                section: "Cytochrome P450 Liver Metabolism",
+                fullLO: "LO6: Discuss the role of CYP450 enzymes in the generation of carcinogens, activation of therapeutic drugs: Tylenol‐induced liver toxicity and drug‐drug interactions.",
+                question: "A 35-year-old man with a history of chronic heavy alcohol consumption takes a massive overdose of acetaminophen (Tylenol). He rapidly develops acute liver failure. His heavy alcohol use induced the expression of an enzyme that shunted a larger percentage of the acetaminophen into a highly toxic metabolite (NAPQI). Which of the following enzymes is primarily responsible for this toxic minor pathway?",
+                options: {
+                    A: "CYP1A1",
+                    B: "CYP2C9",
+                    C: "CYP2D6",
+                    D: "CYP2E1",
+                    E: "CYP3A4"
+                },
+                correctAnswer: "D",
+                rationale: "While acetaminophen is normally metabolized safely via glucuronidation and sulfation, a minor pathway uses CYP2E1 to convert it to the toxic NAPQI. Chronic alcohol consumption induces CYP2E1 expression, increasing the generation of NAPQI and the risk of severe hepatotoxicity.",
+                source: "Cytochrome P450 & Drug Metabolism.pdf, Slides 21 & 22: 'Alcohol also induces CYP2E1 expression... Minor pathway: Acetaminophen gets metabolized into NAPQI, by CYP2E1. NAPQI is hepatotoxic.'"
+            },
+            {
+                section: "Cytochrome P450 Liver Metabolism",
+                fullLO: "LO7: Discuss the regulation of CYP450 enzymes by inducers and inhibitors",
+                question: "A 60-year-old man on a stable dose of warfarin, an anticoagulant, begins consuming a large glass of grapefruit juice every morning. One week later, he presents to the emergency department with a severe nosebleed. His INR is found to be significantly elevated. The interaction between grapefruit juice and warfarin occurred because grapefruit juice:",
+                options: {
+                    A: "Induces CYP2C9 in the liver",
+                    B: "Induces CYP3A4 in the intestine",
+                    C: "Inhibits CYP2C9 in the kidney",
+                    D: "Inhibits CYP3A4 in the intestine",
+                    E: "Stimulates the synthesis of clotting factors"
+                },
+                correctAnswer: "D",
+                rationale: "Grapefruit juice inhibits the intestinal CYP3A4 enzyme, which normally metabolizes anticoagulants like warfarin. Inhibition of this enzyme leads to increased circulating levels of the active drug, thereby increasing the risk of bleeding.",
+                source: "Cytochrome P450 & Drug Metabolism.pdf, Slide 25: 'Grapefruit juice mango and turmeric have compounds that inhibit intestinal CYP3A4 enzyme which metabolizes anticoagulants like warfarin... This can increase the circulating levels of anticoagulants and increase the risk for bleeding.'"
+            },
+            {
+                section: "Cytochrome P450 Liver Metabolism",
+                fullLO: "LO7: Discuss the regulation of CYP450 enzymes by inducers and inhibitors",
+                question: "A patient with cystic fibrosis is treated with Orkambi, a combination drug containing lumacaftor and ivacaftor. Ivacaftor is a known substrate of CYP3A4. Lumacaftor is known to be a strong inducer of CYP3A4. Without an appropriate dose adjustment, what is the most likely effect of lumacaftor on the pharmacokinetics of ivacaftor?",
+                options: {
+                    A: "It will decrease the excretion of ivacaftor",
+                    B: "It will decrease the plasma concentration of ivacaftor",
+                    C: "It will increase the absorption of ivacaftor",
+                    D: "It will increase the half-life of ivacaftor",
+                    E: "It will increase the plasma concentration of ivacaftor"
+                },
+                correctAnswer: "B",
+                rationale: "Because lumacaftor is a strong inducer of CYP3A4, it increases the metabolism of drugs that are substrates for this enzyme (like ivacaftor). This leads to a decreased plasma concentration of ivacaftor.",
+                source: "Cytochrome P450 & Drug Metabolism.pdf, Slide 24: 'Lumacaftor will induce CYP3A4 which will reduce the efficacy of Ivacaftor, as it is a substrate of CYP3A4... Lumacftor potentially  Ivacaftor concentrations in Orkambi'"
+            },
+
+            // --- Section 2: Chronic Liver Disease, Cirrhosis, and Portal Hypertension ---
+            {
+                section: "Chronic Liver Disease, Cirrhosis, and Portal Hypertension",
+                fullLO: "LO1: Describe the presentation of chronic liver disease",
+                question: "A 58-year-old man presents to the clinic complaining of worsening fatigue, anorexia, and muscle wasting. On physical examination, the physician notes parotid gland enlargement, a flapping tremor of the hands (asterixis), and several small, blanching vascular lesions on his chest. Which of the following skin findings is also most likely to be present as a direct clinical manifestation of his chronic liver disease?",
+                options: {
+                    A: "Acanthosis nigricans",
+                    B: "Dermatitis herpetiformis",
+                    C: "Erythema marginatum",
+                    D: "Palmar erythema",
+                    E: "Psoriatic plaques"
+                },
+                correctAnswer: "D",
+                rationale: "The patient's presentation is classic for cirrhosis. Common skin manifestations of cirrhosis include jaundice, spider angiomas, palmar erythema, white nails, and Dupuytren’s contracture.",
+                source: "Cirrhosis and Portal Hypertension.pdf, Slide 11: 'Clinical features of Cirrhosis... Skin: • Jaundice • Spider angiomas • Palmar erythema • White nails • Dupuytren’s contracture'"
+            },
+            {
+                section: "Chronic Liver Disease, Cirrhosis, and Portal Hypertension",
+                fullLO: "LO1: Describe the presentation of chronic liver disease",
+                question: "A 62-year-old man with alcoholic cirrhosis presents with severe ascites and systemic hypotension. His physician explains that the elevated pressure in his portal venous system has triggered a signaling cascade leading to profound splanchnic vasodilation, which lowers his systemic blood pressure. Which of the following molecules is primarily released by endothelial nitric oxide synthase (eNOS) to cause this characteristic vasodilation?",
+                options: {
+                    A: "Aldosterone",
+                    B: "Angiotensin II",
+                    C: "Nitric oxide (NO)",
+                    D: "Norepinephrine",
+                    E: "Vasopressin"
+                },
+                correctAnswer: "C",
+                rationale: "In cirrhosis and portal hypertension, there is an increase in portal pressure that triggers splanchnic vasodilation. This vasodilation is specifically due to the release of nitric oxide (NO) from endothelial nitric oxide synthase (eNOS).",
+                source: "Cirrhosis and Portal Hypertension.pdf, Slide 8: 'Vasodilatation due to the release of NO from e NOS -> Hypotension'"
+            },
+            {
+                section: "Chronic Liver Disease, Cirrhosis, and Portal Hypertension",
+                fullLO: "LO2: Describe the complications or the consequences of chronic liver disease",
+                question: "A 50-year-old woman with a history of chronic hepatitis C infection undergoes a diagnostic paracentesis for newly developed abdominal distension. The physician suspects the fluid accumulation is a direct consequence of portal hypertension secondary to cirrhosis. Which of the following findings in the ascitic fluid analysis would most strongly support this etiology?",
+                options: {
+                    A: "Ascitic fluid polymorphonuclear cells > 250 cells/mm³",
+                    B: "Gradient between serum albumin to ascites albumin > 1.1",
+                    C: "Gradient between serum albumin to ascites albumin < 1.1",
+                    D: "High concentration of amylase in the ascitic fluid",
+                    E: "Presence of grossly bloody ascitic fluid"
+                },
+                correctAnswer: "B",
+                rationale: "Ascites is a common complication of cirrhosis. In cases where ascites is caused by portal hypertension, the serum-ascites albumin gradient (SAAG) is greater than 1.1.",
+                source: "Cirrhosis and Portal Hypertension.pdf, Slide 23: 'Ascites • In portal hypertension the gradient between the serum albumin to ascites albumin in > 1.1.'"
+            },
+            {
+                section: "Chronic Liver Disease, Cirrhosis, and Portal Hypertension",
+                fullLO: "LO2: Describe the complications or the consequences of chronic liver disease",
+                question: "A 55-year-old man with cirrhosis presents with massive hematemesis and hemorrhagic shock. An upper endoscopy reveals bleeding from dilated submucosal vessels in the distal esophagus. The formation of these esophageal varices is directly due to the portal pressure exceeding a specific threshold. What is the minimum portal pressure (in mmHg) associated with the development of these varices?",
+                options: {
+                    A: ">2 mmHg",
+                    B: ">5 mmHg",
+                    C: ">8 mmHg",
+                    D: ">12 mmHg",
+                    E: ">25 mmHg"
+                },
+                correctAnswer: "D",
+                rationale: "Esophageal varices develop as a consequence of chronic liver disease when there is an increase in portal pressure. A normal portal pressure is 6-8 mmHg, but varices form when the portal pressure exceeds 12 mmHg.",
+                source: "Cirrhosis and Portal Hypertension.pdf, Slide 26: 'Varices • Due to increase in the portal pressure... Portal pr. >12mm Hg'"
+            },
+            {
+                section: "Chronic Liver Disease, Cirrhosis, and Portal Hypertension",
+                fullLO: "LO3: Describe how to manage the complications of chronic liver disease.",
+                question: "A 60-year-old man with cirrhosis and ascites presents with a fever and worsening abdominal pain. Paracentesis yields cloudy fluid with a polymorphonuclear cell count of 400 cells/mm³. He is diagnosed with spontaneous bacterial peritonitis. In addition to an intravenous albumin infusion, which of the following is the most appropriate initial targeted therapy for this complication?",
+                options: {
+                    A: "First-generation cephalosporin (e.g., cefazolin)",
+                    B: "Macrolide (e.g., azithromycin)",
+                    C: "Oral norfloxacin",
+                    D: "Third-generation cephalosporin (e.g., cefotaxime)",
+                    E: "Vancomycin"
+                },
+                correctAnswer: "D",
+                rationale: "The standard treatment for spontaneous bacterial peritonitis (SBP) includes a 3rd generation cephalosporin (such as cefotaxime or ceftriaxone) along with IV albumin. Long-term oral norfloxacin is used indefinitely afterward for prevention, not as the initial acute treatment.",
+                source: "Cirrhosis and Portal Hypertension.pdf, Slide 24: 'Treatment of Peritonitis... 3rd generation cephalosporins (cefotaxime, ceftrioxone) • IV albumin infusion 1.5gm/Kg body wt. at diagnosis'"
+            },
+            {
+                section: "Chronic Liver Disease, Cirrhosis, and Portal Hypertension",
+                fullLO: "LO3: Describe how to manage the complications of chronic liver disease.",
+                question: "A 65-year-old man with known cirrhosis is brought to the emergency department by his wife because he is confused, lethargic, and has a reversed sleep-wake cycle. Examination reveals a flapping tremor (asterixis). After ensuring airway protection and ruling out infection, which of the following is the most appropriate specific management step for his hepatic encephalopathy?",
+                options: {
+                    A: "Administration of a third-generation cephalosporin",
+                    B: "High-protein diet rich in animal protein",
+                    C: "Initiation of regular sedative medications",
+                    D: "Lactulose administration by nasogastric (NG) tube",
+                    E: "Transjugular intrahepatic portosystemic shunt (TIPSS)"
+                },
+                correctAnswer: "D",
+                rationale: "The management of hepatic encephalopathy includes discontinuing any sedatives, correcting electrolytes, ensuring normal protein in diet (increasing vegetable protein), and administering lactulose (often by NG tube) to decrease ammonia levels.",
+                source: "Cirrhosis and Portal Hypertension.pdf, Slide 37: 'Management of Encephalopathy • Discontinue sedatives • Correct electrolytes & glucose... Lactulose by NG tube'"
+            },
+
+            // --- Section 3: Fat Soluble Vitamins ---
+            {
+                section: "Fat Soluble Vitamins",
+                fullLO: "LO1: Define the fat-soluble vitamins and their general significance as it relates to absorption.",
+                question: "A 7-year-old boy with cystic fibrosis is evaluated for poor growth and vision problems at night. He has significant fat malabsorption due to exocrine pancreatic insufficiency. The physician suspects a deficiency in multiple fat-soluble vitamins. Absorption of these vitamins in the small intestine is strictly dependent on the presence of dietary lipids, pancreatic lipase, and which of the following substances?",
+                options: {
+                    A: "Bile salts",
+                    B: "Calcium",
+                    C: "Intrinsic factor",
+                    D: "Pepsin",
+                    E: "Vitamin C"
+                },
+                correctAnswer: "A",
+                rationale: "Fat-soluble vitamins are absorbed with dietary fat in the small intestine. Their absorption strictly requires the presence of bile salts, pancreatic lipase, and dietary lipids.",
+                source: "Fat-Soluble Vitamins.pdf, Slide 4: 'Fat-soluble: Absorbed with dietary fat in the small intestine - requires bile salts, pancreatic lipase, and dietary lipids – deficiency of multiple vitamins more common'"
+            },
+            {
+                section: "Fat Soluble Vitamins",
+                fullLO: "LO1: Define the fat-soluble vitamins and their general significance as it relates to absorption.",
+                question: "A researcher is tracking the absorption pathway of Vitamin E in healthy volunteers. After the vitamin is absorbed along with dietary fat in the small intestine, it must be transported through the lymphatic system before entering the systemic circulation. Which of the following vehicles is responsible for this initial transport from the small intestine?",
+                options: {
+                    A: "Albumin",
+                    B: "Chylomicrons",
+                    C: "High-density lipoproteins (HDL)",
+                    D: "Low-density lipoproteins (LDL)",
+                    E: "Retinol-binding protein"
+                },
+                correctAnswer: "B",
+                rationale: "After absorption in the small intestine, fat-soluble vitamins are incorporated into and transported by chylomicrons through the lymphatic system.",
+                source: "Fat-Soluble Vitamins.pdf, Slide 4: 'Fat-soluble: Transported from small intestine in chylomicrons'"
+            },
+            {
+                section: "Fat Soluble Vitamins",
+                fullLO: "LO2: Discuss the capacity to store fat-soluble vitamins and how this affects dietary intake.",
+                question: "A 30-year-old woman decides to adopt a strict fat-free diet to lose weight rapidly. Over the next several months, she completely eliminates all dietary fats but continues to consume adequate water-soluble vitamins. Her physician warns her that she may eventually develop deficiencies in Vitamins A, D, E, and K, but notes that the symptoms will be slow to develop. Which of the following best explains why the deficiency symptoms of these specific vitamins take a long time to manifest?",
+                options: {
+                    A: "They are rapidly synthesized by the gut microbiome.",
+                    B: "They are reabsorbed completely by the proximal convoluted tubule.",
+                    C: "They are stored in excess in the liver and adipose tissue.",
+                    D: "They can be synthesized endogenously from cholesterol.",
+                    E: "They have a very short half-life in the bloodstream."
+                },
+                correctAnswer: "C",
+                rationale: "Fat-soluble vitamins are stored in excess in the liver and adipose tissue. Because of these stores, deficiency disorders are slow to occur following dietary withdrawal.",
+                source: "Fat-Soluble Vitamins.pdf, Slide 4: 'Fat-soluble: Excess stored in liver and adipose tissue... deficiency disorder is slow to occur following withdrawal'"
+            },
+            {
+                section: "Fat Soluble Vitamins",
+                fullLO: "LO2: Discuss the capacity to store fat-soluble vitamins and how this affects dietary intake.",
+                question: "A 45-year-old man begins taking large doses of over-the-counter vitamin supplements, far exceeding the recommended daily allowances for both water-soluble and fat-soluble vitamins. His physician warns him that he is at much higher risk for toxicity from the fat-soluble vitamins than the water-soluble ones. Which of the following best explains why excess fat-soluble vitamins carry a higher risk of toxicity?",
+                options: {
+                    A: "They are directly absorbed into the portal circulation.",
+                    B: "They are easily lost in the urine.",
+                    C: "They are not stored in any tissue.",
+                    D: "They are stored in the liver and adipose tissue.",
+                    E: "They require intrinsic factor for degradation."
+                },
+                correctAnswer: "D",
+                rationale: "Unlike water-soluble vitamins which are easily lost in the urine with no toxicity, excess fat-soluble vitamins are stored in the liver and adipose tissue, which leads directly to toxicity when consumed in excess.",
+                source: "Fat-Soluble Vitamins.pdf, Slide 4: 'Fat-soluble: Excess stored in liver and adipose tissue... Excess associated with toxicity' vs 'Water-soluble: Excess not stored in any tissue... Excess lost in urine, no toxicity'"
+            },
+            {
+                section: "Fat Soluble Vitamins",
+                fullLO: "LO3: Describe the main functions, disorders of deficiency, and disorders of excess associated with each of the fat-soluble vitamins.",
+                question: "A 4-year-old boy from a developing country is brought to a medical mission clinic. His mother reports he cannot see well at dusk. Examination of his eyes reveals dry-appearing triangular patches of xerosed conjunctiva with white foamy material on the temporal corner of the cornea. These lesions (Bitot's spots) are a pathognomonic feature of a deficiency in which of the following vitamins?",
+                options: {
+                    A: "Vitamin A",
+                    B: "Vitamin C",
+                    C: "Vitamin D",
+                    D: "Vitamin E",
+                    E: "Vitamin K"
+                },
+                correctAnswer: "A",
+                rationale: "Vitamin A deficiency causes night blindness (nyctalopia) and, in prolonged cases, xerophthalmia. A pathognomonic feature of this deficiency is Bitot's spots, which are dry-appearing triangular patches of xerosed conjunctiva with white foamy material.",
+                source: "Fat-Soluble Vitamins.pdf, Slide 9: 'Prolonged deficiency leads to total blindness and xerophthalmia... A pathognomic feature of xerophthalmia is the dry-appearing triangular patches of xerosed conjunctiva with some white foamy material (usually located on the temporal corner of the cornea) on the surface of the eyes called Bitot’s spots.'"
+            },
+            {
+                section: "Fat Soluble Vitamins",
+                fullLO: "LO3: Describe the main functions, disorders of deficiency, and disorders of excess associated with each of the fat-soluble vitamins.",
+                question: "A 15-month-old boy is evaluated for delayed walking and bowing of his legs. Radiographs reveal soft, pliable bones and metaphyseal flaring. A diagnosis of rickets is made. The active form of the deficient vitamin normally functions to maintain adequate plasma calcium and phosphate levels. Which of the following organs is responsible for the final enzymatic hydroxylation step (via 1-alpha hydroxylase) to produce this active hormone?",
+                options: {
+                    A: "Bone",
+                    B: "Intestine",
+                    C: "Kidney",
+                    D: "Liver",
+                    E: "Skin"
+                },
+                correctAnswer: "C",
+                rationale: "Vitamin D deficiency in children causes rickets. The activation of Vitamin D involves two hydroxylations: the first in the liver (forming calcidiol), and the second, final hydroxylation in the kidney via 1a-hydroxylase to form the active hormone calcitriol (1,25-dihydroxyvitamin D).",
+                source: "Fat-Soluble Vitamins.pdf, Slide 14: 'Second hydroxylation takes place in the kidney at the 1st carbon atom to form the physiologically active 1,25-dihydroxyvitamin D (calcitriol) catalyzed by the enzyme 1a-hydroxylase.'"
+            },
+            {
+                section: "Fat Soluble Vitamins",
+                fullLO: "LO3: Describe the main functions, disorders of deficiency, and disorders of excess associated with each of the fat-soluble vitamins.",
+                question: "A 6-year-old boy with a known fat malabsorption syndrome presents with a slow-progressing ataxia, lack of reflexes, and diminished sensation to pain. Laboratory testing shows increased red blood cell fragility. His physician suspects a deficiency in a fat-soluble vitamin that normally functions as a critical antioxidant to protect cell membranes from free radicals. Which of the following vitamins is most likely deficient?",
+                options: {
+                    A: "Vitamin A",
+                    B: "Vitamin C",
+                    C: "Vitamin D",
+                    D: "Vitamin E",
+                    E: "Vitamin K"
+                },
+                correctAnswer: "D",
+                rationale: "Vitamin E functions as an antioxidant protecting cell membranes from free radicals. Its deficiency causes compromised plasma membrane integrity leading to RBC fragility, as well as slow-progressing neurological symptoms like ataxia and lack of reflexes.",
+                source: "Fat-Soluble Vitamins.pdf, Slides 29, 31: 'Vitamin E – Functions: As an antioxidant, protects cell membranes from free radicals... Vitamin E – Deficiency: Compromised plasma membrane integrity- Red blood cell fragility, Slow-progressing neurological symptoms affecting movement and motor control - mild ataxia, lack of reflexes'"
+            },
+            {
+                section: "Fat Soluble Vitamins",
+                fullLO: "LO3: Describe the main functions, disorders of deficiency, and disorders of excess associated with each of the fat-soluble vitamins.",
+                question: "A 3-month-old female infant, exclusively breast-fed and born at home without receiving prophylactic postnatal injections, presents with seizures. Imaging demonstrates an intracranial hemorrhage. Laboratory studies show prolonged partial thromboplastin and prothrombin times. The deficient vitamin is an essential coenzyme for which of the following post-translational modifications of clotting factors?",
+                options: {
+                    A: "Acetylation of lysine residues",
+                    B: "Gamma-carboxylation of glutamic acid residues",
+                    C: "Glucuronidation of hydroxyl groups",
+                    D: "Hydroxylation of proline residues",
+                    E: "Phosphorylation of tyrosine residues"
+                },
+                correctAnswer: "B",
+                rationale: "Vitamin K is required for the gamma (γ)-carboxylation of glutamic acid residues in certain proteins, including critical blood clotting factors. A deficiency (common in newborns who don't receive prophylaxis) leads to severe bleeding and hemorrhagic disease.",
+                source: "Fat-Soluble Vitamins.pdf, Slides 33, 34: 'Vitamin K – Function: γ-carboxylation of glutamic acids in certain proteins – mediated by Vitamin K-dependent carboxylase... Newborns are prone to vitamin K deficiency... Symptoms- bleeding, hypothrombinemia'"
+            },
+            {
+                section: "Fat Soluble Vitamins",
+                fullLO: "LO4: Identify the sources rich in each of the fat-soluble vitamins.",
+                question: "A 30-year-old pregnant woman is counseled by her obstetrician regarding her nutritional intake. She wants to ensure she gets adequate Vitamin A naturally through her diet rather than from high-dose supplements, to avoid the risk of teratogenicity. Which of the following dietary sources is rich in Vitamin A (or its provitamin precursors)?",
+                options: {
+                    A: "Cabbage and cauliflower",
+                    B: "Dark green, orange, and yellow vegetables",
+                    C: "Fortified dairy products and saltwater fish",
+                    D: "Lean chicken breast and beef muscle",
+                    E: "Wheat germ oil and peanuts"
+                },
+                correctAnswer: "B",
+                rationale: "Dietary sources rich in Vitamin A (or provitamin A like beta-carotene) include dark green, orange, or yellow vegetables such as sweet potatoes, spinach, and carrots.",
+                source: "Fat-Soluble Vitamins.pdf, Slide 11: 'Source: Dark green, orange or yellow vegetables such as sweet potato, spinach, carrots, milk cheese, liver, and fish liver oils.'"
+            },
+            {
+                section: "Fat Soluble Vitamins",
+                fullLO: "LO4: Identify the sources rich in each of the fat-soluble vitamins.",
+                question: "A 65-year-old man is prescribed warfarin for atrial fibrillation. His physician advises him to maintain a consistent diet to avoid fluctuations in his INR, specifically warning him about foods rich in Vitamin K. In addition to synthesis by his intestinal microflora, which of the following foods is a rich source of Vitamin K?",
+                options: {
+                    A: "Cabbage and spinach",
+                    B: "Citrus fruits and strawberries",
+                    C: "Sweet potatoes and carrots",
+                    D: "Vegetable oils and peanuts",
+                    E: "Whole grain breads and cereals"
+                },
+                correctAnswer: "A",
+                rationale: "Natural dietary sources of Vitamin K include cabbage, cauliflower, spinach, egg yolk, and liver, in addition to synthesis by intestinal microflora.",
+                source: "Fat-Soluble Vitamins.pdf, Slide 35: 'Source: Intestinal microflora, cabbage, cauliflower, spinach, egg yolk and liver.'"
+            },
+            {
+                section: "Fat Soluble Vitamins",
+                fullLO: "LO5: List the recommended daily allowance of each vitamin.",
+                question: "A 60-year-old woman living in a northern latitude with minimal sun exposure asks her doctor about Vitamin D supplementation to prevent osteomalacia. The physician recommends she meet the current Recommended Dietary Allowance (RDA) for adults. Which of the following is the approximate RDA for Vitamin D?",
+                options: {
+                    A: "1.0 mg",
+                    B: "15 mg",
+                    C: "20 μg",
+                    D: "100 μg",
+                    E: "500 mg"
+                },
+                correctAnswer: "C",
+                rationale: "The Recommended Dietary Allowance (RDA) for Vitamin D in adults is approximately 20 micrograms (μg).",
+                source: "Fat-Soluble Vitamins.pdf, Slide 25: 'Exposure of skin to UV rays, fortified dairy products, and saltwater fish. RDA for adults is ~20 μg.'"
+            },
+            {
+                section: "Fat Soluble Vitamins",
+                fullLO: "LO5: List the recommended daily allowance of each vitamin.",
+                question: "A 25-year-old man asks his nutritionist about his daily intake of Vitamin E. He consumes a balanced diet rich in vegetable oils and nuts. To ensure he meets the Recommended Dietary Allowance (RDA) without risking toxicity, he needs to know the standard daily target. Which of the following is the approximate RDA for Vitamin E?",
+                options: {
+                    A: "1.0 mg/day",
+                    B: "15 mg/day",
+                    C: "20 μ g/day",
+                    D: "70-140 μ g/day",
+                    E: "1000 mg/day"
+                },
+                correctAnswer: "B",
+                rationale: "The Recommended Dietary Allowance (RDA) for Vitamin E is approximately 15 milligrams per day (mg/day).",
+                source: "Fat-Soluble Vitamins.pdf, Slide 31: 'Vegetable oils such as wheat germ oil, corn, soy and peanut oil. RDA is ~15 mg/day.'"
+            }
+        ];
+
+        // --- Core Logic ---
+        const quizRoot = document.getElementById('quiz-root');
+        const themeSelect = document.getElementById('theme-select');
+        const pinBtn = document.getElementById('pin-btn');
+        const mainHeader = document.getElementById('main-header');
+        const sectionNav = document.getElementById('section-nav');
+        const customBuilder = document.getElementById('custom-builder');
+        const rootElements = document.documentElement;
+
+        let isRevealed = false;
+
+        function toggleAllLOs() {
+            isRevealed = !isRevealed;
+            const btn = document.getElementById('reveal-all-btn');
+            btn.textContent = isRevealed ? "Hide Learning Objectives" : "Show Learning Objectives";
+            
+            document.querySelectorAll('.lo-box').forEach(box => {
+                box.style.display = isRevealed ? 'block' : 'none';
+            });
+        }
+
+        function initQuiz() {
+            let currentSection = "";
+            let sectionIndex = 0;
+            
+            quizData.forEach((item, index) => {
+                if (item.section !== currentSection) {
+                    currentSection = item.section;
+                    
+                    const sectionId = 'sec-' + sectionIndex;
+                    
+                    const sectionHeader = document.createElement('h2');
+                    sectionHeader.className = 'section-header';
+                    sectionHeader.id = sectionId;
+                    sectionHeader.textContent = currentSection;
+                    quizRoot.appendChild(sectionHeader);
+
+                    const navBtn = document.createElement('button');
+                    let btnText = currentSection;
+                    if (btnText.includes("Cytochrome P450 Liver Metabolism")) btnText = "CYP450 Metabolism";
+                    if (btnText.includes("Chronic Liver Disease, Cirrhosis, and Portal Hypertension")) btnText = "Cirrhosis & Portal HTN";
+                    if (btnText.includes("Fat Soluble Vitamins")) btnText = "Fat Soluble Vitamins";
+                    
+                    navBtn.textContent = btnText;
+                    navBtn.onclick = () => {
+                        document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
+                    };
+                    sectionNav.appendChild(navBtn);
+
+                    sectionIndex++;
+                }
+
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.id = `q-card-${index}`;
+
+                const loBox = document.createElement('div');
+                loBox.className = 'lo-box';
+                loBox.id = `lo-${index}`;
+                loBox.innerHTML = item.fullLO;
+                card.appendChild(loBox);
+
+                const qText = document.createElement('div');
+                qText.className = 'question-text';
+                qText.innerHTML = `${index + 1}. ${item.question}`;
+                card.appendChild(qText);
+
+                const optionsGrid = document.createElement('div');
+                optionsGrid.className = 'options-grid';
+
+                for (const[key, value] of Object.entries(item.options)) {
+                    const label = document.createElement('label');
+                    label.className = 'option-label';
+                    
+                    const input = document.createElement('input');
+                    input.type = 'radio';
+                    input.name = `question-${index}`;
+                    input.value = key;
+
+                    const span = document.createElement('span');
+                    span.innerHTML = `${key}. ${value}`;
+
+                    label.appendChild(input);
+                    label.appendChild(span);
+                    optionsGrid.appendChild(label);
+                }
+                card.appendChild(optionsGrid);
+
+                const btn = document.createElement('button');
+                btn.className = 'btn-check';
+                btn.textContent = 'Check Answer';
+                btn.onclick = () => checkAnswer(index);
+                card.appendChild(btn);
+
+                const feedback = document.createElement('div');
+                feedback.className = 'feedback';
+                feedback.id = `feedback-${index}`;
+                card.appendChild(feedback);
+
+                quizRoot.appendChild(card);
+            });
+
+            const returnContainer = document.createElement('div');
+            returnContainer.style.textAlign = 'center';
+            returnContainer.style.marginTop = '2rem';
+            
+            const returnBtn = document.createElement('a');
+            returnBtn.href = 'https://ibecerramcg.github.io/GI-GU-ENDO-Practice-Quizzes/';
+            returnBtn.className = 'btn-link';
+            returnBtn.textContent = '← Return to Quiz Directory';
+            
+            returnContainer.appendChild(returnBtn);
+            quizRoot.appendChild(returnContainer);
+
+            const savedTheme = localStorage.getItem('quizTheme') || 'dark';
+            themeSelect.value = savedTheme;
+            changeTheme(savedTheme);
+
+            const savedPinState = localStorage.getItem('headerPinned');
+            toggleHeader(savedPinState !== 'false');
+        }
+
+        function checkAnswer(index) {
+            const selected = document.querySelector(`input[name="question-${index}"]:checked`);
+            const feedbackEl = document.getElementById(`feedback-${index}`);
+            const data = quizData[index];
+
+            if (!selected) {
+                alert("Please select an answer.");
+                return;
+            }
+
+            const isCorrect = selected.value === data.correctAnswer;
+            
+            let html = `<span class="feedback-header">${isCorrect ? "Correct!" : "Incorrect"}</span>`;
+            if (!isCorrect) {
+                html += `<div>The correct answer is <strong>${data.correctAnswer}</strong>.</div>`;
+            }
+            
+            html += `<div class="rationale"><strong>Rationale:</strong> ${data.rationale}</div>`;
+            html += `<div class="source"><strong>Source:</strong> ${data.source}</div>`;
+
+            feedbackEl.innerHTML = html;
+            feedbackEl.className = `feedback ${isCorrect ? 'correct' : 'incorrect'}`;
+            feedbackEl.style.display = 'block';
+        }
+
+        function changeTheme(themeName) {
+            localStorage.setItem('quizTheme', themeName);
+            
+            if (themeName === 'custom') {
+                rootElements.removeAttribute('data-theme');
+                customBuilder.classList.add('active');
+                loadCustomTheme();
+            } else {
+                rootElements.setAttribute('data-theme', themeName);
+                customBuilder.classList.remove('active');
+                rootElements.removeAttribute('style');
+            }
+        }
+
+        function updateCustomTheme() {
+            const bg = document.getElementById('color-bg').value;
+            const card = document.getElementById('color-card').value;
+            const text = document.getElementById('color-text').value;
+            const accent = document.getElementById('color-accent').value;
+
+            rootElements.style.setProperty('--bg-body', bg);
+            rootElements.style.setProperty('--bg-header', bg);
+            rootElements.style.setProperty('--bg-card', card);
+            rootElements.style.setProperty('--highlight-bg', card);
+            rootElements.style.setProperty('--text-main', text);
+            rootElements.style.setProperty('--text-accent', accent);
+            rootElements.style.setProperty('--button-bg', accent);
+            rootElements.style.setProperty('--button-text', bg);
+            rootElements.style.setProperty('--border-color', accent + '40');
+
+            const customColors = { bg, card, text, accent };
+            localStorage.setItem('customThemeColors', JSON.stringify(customColors));
+        }
+
+        function loadCustomTheme() {
+            const savedColors = JSON.parse(localStorage.getItem('customThemeColors'));
+            if (savedColors) {
+                document.getElementById('color-bg').value = savedColors.bg;
+                document.getElementById('color-card').value = savedColors.card;
+                document.getElementById('color-text').value = savedColors.text;
+                document.getElementById('color-accent').value = savedColors.accent;
+                updateCustomTheme();
+            } else {
+                updateCustomTheme();
+            }
+        }
+
+        function toggleHeader(forceState) {
+            const isCurrentlyPinned = !mainHeader.classList.contains('unpinned');
+            const newState = (typeof forceState === 'boolean') ? forceState : !isCurrentlyPinned;
+
+            if (newState) {
+                mainHeader.classList.remove('unpinned');
+                pinBtn.classList.add('pin-active');
+                localStorage.setItem('headerPinned', 'true');
+            } else {
+                mainHeader.classList.add('unpinned');
+                pinBtn.classList.remove('pin-active');
+                localStorage.setItem('headerPinned', 'false');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initQuiz);
+
+    </script>
+</body>
+</html>
